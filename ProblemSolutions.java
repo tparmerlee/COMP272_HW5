@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Tristan Parmerlee / COMP 272-002
  *
  *   This java file contains the problem solutions of isSubSet, findKthLargest,
  *   and sort2Arrays methods. You should utilize the Java Collection Framework for
@@ -32,9 +32,21 @@ class ProblemSolutions {
 
     public boolean isSubset(int list1[], int list2[]) {
 
-        // ADD YOU CODE HERE -- DON'T FORGET TO ADD YOR NAME AT TOP OF FILE
+        HashMap<Integer, Boolean> map = new HashMap<>();
 
-        return false;
+        // add all elements of list1 to map
+        for (int i : list1){
+            map.put(i, true);
+        }
+
+        // check if every element in list 2 is contained in map
+        for (int i : list2){
+            if (map.get(i) == null){
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -53,9 +65,18 @@ class ProblemSolutions {
 
     public int findKthLargest(int[] array, int k) {
 
-        // ADD YOUR CODE HERE
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
 
-        return 0;
+        for (int i : array){
+            heap.offer(i);
+            // keep only k-elements that are greater than the root
+            if (heap.size() > k){
+                heap.poll();
+            }
+        }
+
+        // return the root node (which has k elements greater than it)
+        return heap.peek();
     }
 
 
@@ -74,9 +95,22 @@ class ProblemSolutions {
 
     public int[] sort2Arrays(int[] array1, int[] array2) {
 
-        // ADD YOU CODE HERE
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        
+        // add lists to heap
+        for (int i : array1) heap.offer(i);
+        for (int j : array2) heap.offer(j);
 
-        return null;
+        int size = heap.size();
+        int[] returnArray = new int[size];
+
+        // remove the root node of the heap (which will always be less than all of the other elements in the heap)
+        // and add them to return array
+        for (int k = 0; k<size; k++){
+            returnArray[k] = heap.poll();
+        }
+
+        return returnArray;
     }
 
 }

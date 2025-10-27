@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Tristan Parmerlee / COMP 272-002
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -246,9 +246,51 @@ public class CuckooHash<K, V> {
 
  	public void put(K key, V value) {
 
-		// ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
-		// Also make sure you read this method's prologue above, it should help
-		// you. Especially the two HINTS in the prologue.
+		Bucket<K, V> newBucket = new Bucket<>(key, value);
+		K currentKey = key;
+
+		int location = hash1(currentKey);
+
+		// try to add new bucket to hash1 mapping first
+		if (table[location] == null) {
+			table[location] = newBucket;
+			return;
+		}
+
+		// avoid heap space error; if it already exists in the table just skip
+		if (table[location].getBucKey().equals(key) && table[location].getValue().equals(value)) {
+			return;
+		}
+
+		for (int i = 0; i < CAPACITY; i++) {
+			
+			// try to add new bucket to hash1 mapping first
+			if (table[location] == null) {
+				table[location] = newBucket;
+				return;
+			}
+
+			// if occupied, kick out old value (cuckoo)
+			Bucket<K, V> evicted = table[location];
+			table[location] = newBucket;
+
+			// move evicted bucket
+			newBucket = evicted;
+			currentKey = evicted.getBucKey();
+
+			// move it to new bucket using better hash function (and loop)
+			if (hash1(currentKey) == location){
+				location = hash2(currentKey);
+			} else{
+				location = hash1(currentKey);
+			}
+
+
+		}
+		
+		// if exceeded capacity, rehash the table and try again
+		rehash();
+		put(newBucket.getBucKey(), newBucket.getValue());
 
 		return;
 	}
